@@ -1,0 +1,5 @@
+[33mb986acb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/ui-ux-improvement[m[33m, [m[1;31morigin/feature/ui-ux-improvement[m[33m)[m feat: E2E 테스트 및 Supabase 연동 초기 설정
+[33m867b433[m[33m ([m[1;32mmain[m[33m)[m 메모 앱 UI/UX 개선 및 MemoViewer 컴포넌트 추가하라
+[33m77505c8[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Playwright 테스트 설정 추가 및 관련 스크립트 업데이트
+[33mfc2dafa[m feat: E2E 테스트 자동화 규칙 문서 추가
+[33m0a49675[m feat: E2E 테스트 시나리오 분석 규칙 문서 추가

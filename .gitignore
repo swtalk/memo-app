@@ -42,3 +42,7 @@ next-env.d.ts
 
 # workshop materials (instructor only)
 WORKSHOP_SCENARIO.md
+
+# test reports
+/playwright-report/
+/test-results/

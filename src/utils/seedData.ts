@@ -1,5 +1,5 @@
 import { Memo } from '@/types/memo'
-import { localStorageUtils } from './localStorage'
+import { supabase } from './supabase'
 
 export const sampleMemos: Memo[] = [
   {
@@ -64,23 +64,69 @@ export const sampleMemos: Memo[] = [
   },
 ]
 
-export const seedSampleData = () => {
-  // 기존 데이터가 없을 때만 샘플 데이터 추가
-  const existingMemos = localStorageUtils.getMemos()
-  if (existingMemos.length === 0) {
-    localStorageUtils.saveMemos(sampleMemos)
-    console.log('Sample data seeded successfully!')
-    return true
+export const seedSampleData = async () => {
+  try {
+    // 기존 데이터가 없을 때만 샘플 데이터 추가
+    const { data: existingMemos, error: fetchError } = await supabase
+      .from('memos')
+      .select('id')
+      .limit(1)
+    
+    if (fetchError) throw fetchError
+    
+    if (!existingMemos || existingMemos.length === 0) {
+      // ID 제거하고 Supabase가 UUID 자동 생성하도록 함
+      const memosToInsert = sampleMemos.map(({ id, ...memo }) => ({
+        ...memo,
+        created_at: memo.createdAt,
+        updated_at: memo.updatedAt,
+      }))
+      
+      const { error } = await supabase
+        .from('memos')
+        .insert(memosToInsert)
+      
+      if (error) throw error
+      
+      console.log('Sample data seeded successfully!')
+      return true
+    }
+    return false
+  } catch (error) {
+    console.error('Failed to seed sample data:', error)
+    return false
   }
-  return false
 }
 
-export const clearAllData = () => {
-  localStorageUtils.clearMemos()
-  console.log('All data cleared!')
+export const clearAllData = async () => {
+  try {
+    const { error } = await supabase
+      .from('memos')
+      .delete()
+      .neq('id', '00000000-0000-0000-0000-000000000000') // 모든 메모 삭제
+    
+    if (error) throw error
+    
+    console.log('All data cleared!')
+    return true
+  } catch (error) {
+    console.error('Failed to clear data:', error)
+    return false
+  }
 }
 
-export const resetToSampleData = () => {
-  localStorageUtils.saveMemos(sampleMemos)
-  console.log('Data reset to sample data!')
+export const resetToSampleData = async () => {
+  try {
+    // 기존 데이터 삭제
+    await clearAllData()
+    
+    // 샘플 데이터 추가
+    await seedSampleData()
+    
+    console.log('Data reset to sample data!')
+    return true
+  } catch (error) {
+    console.error('Failed to reset data:', error)
+    return false
+  }
 }
